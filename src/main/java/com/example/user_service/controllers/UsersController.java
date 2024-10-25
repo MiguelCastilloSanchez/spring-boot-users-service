@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,13 +39,13 @@ public class UsersController {
     // ================  USER Role Endpoints  ===============
     // ======================================================
 
-    @SuppressWarnings("rawtypes")
-    @GetMapping(value = "/api-test")
-    public ResponseEntity addUser(){
-
-        return userService.createUser("6706e4559534da5fd4dbe68d");
-    }
-
+    /**
+     * Update user's information
+     *
+     * @param data Object containing all the data to update
+     * @param result Object checking the validation of the user's new data
+     * @return ResponseEntity indicating success or failure of user's data update
+     */
     @SuppressWarnings("rawtypes")
     @PostMapping(value = "/update-user", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity addPost(@Valid @RequestBody UpdateUserDTO data, BindingResult result, 
@@ -66,6 +65,12 @@ public class UsersController {
     // ===============  ADMIN Role Endpoints  ===============
     // ======================================================
 
+    /**
+     * Removes an user
+     *
+     * @param userId String containing the user id to be removed
+     * @return ResponseEntity indicating success or failure of user's removal
+     */
     @SuppressWarnings("rawtypes")
     @DeleteMapping("/{userId}/remove")
     public ResponseEntity deleteAnyPost(@PathVariable String userId){
