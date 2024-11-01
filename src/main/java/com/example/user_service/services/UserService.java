@@ -12,12 +12,16 @@ import org.springframework.stereotype.Service;
 
 import com.example.user_service.entities.users.User;
 import com.example.user_service.repositories.UserRepository;
+import com.example.user_service.services.rabbitmq.RabbitSenderService;
 
 @Service
 public class UserService {
     
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RabbitSenderService rabbitSenderService;
 
 
     @SuppressWarnings("rawtypes")
@@ -28,7 +32,7 @@ public class UserService {
             user.setTimestamp(DateTimeFormatter.ISO_INSTANT.format(Instant.now().minus(Duration.ofHours(6))));
             user.setProfilePhoto("default_pfp_.png");
             userRepository.save(user);
-        return ResponseEntity.ok().build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -50,6 +54,20 @@ public class UserService {
         userRepository.save(user);
 
         return ResponseEntity.ok().body("User data updated");
+    }
+
+    @SuppressWarnings("rawtypes")
+    public ResponseEntity deleteUser(String userId){
+
+        ResponseEntity<User> response = findUserById(userId);
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            return response;
+        }
+        
+        rabbitSenderService.sendMessage(userId);
+        userRepository.deleteById(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     private ResponseEntity<User> findUserById(String userId) {

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.user_service.entities.users.dtos.UpdateUserDTO;
-import com.example.user_service.services.RabbitMQService;
 import com.example.user_service.services.TokenService;
 import com.example.user_service.services.UserService;
 
@@ -31,18 +30,16 @@ public class UsersController {
     @Autowired
     private TokenService tokenService;
 
-    @Autowired
-    private RabbitMQService rabbitMQService;
+
 
     // ======================================================
     // ================  Public Endpoints  ==================
     // ======================================================
 
     @SuppressWarnings("rawtypes")
-    @GetMapping(value = "/test")
-    public ResponseEntity test(){
-        rabbitMQService.sendMessage("id_test");
-        return ResponseEntity.ok().body("Test");
+    @GetMapping(value = "/{userId}/delete")
+    public ResponseEntity test(@PathVariable String userId){
+        return userService.deleteUser(userId);
     }
 
     // ======================================================
