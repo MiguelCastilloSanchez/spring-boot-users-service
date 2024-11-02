@@ -32,6 +32,8 @@ public class UserService {
             user.setTimestamp(DateTimeFormatter.ISO_INSTANT.format(Instant.now().minus(Duration.ofHours(6))));
             user.setProfilePhoto("default_pfp_.png");
             userRepository.save(user);
+
+            System.out.println("Created User With ID: " + userId);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

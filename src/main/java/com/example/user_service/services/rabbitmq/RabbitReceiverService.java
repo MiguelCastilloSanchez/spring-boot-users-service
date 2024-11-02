@@ -15,7 +15,7 @@ public class RabbitReceiverService {
     @Autowired
     private UserService userService;
 
-    @RabbitListener(queues = "${spring.rabbitmq.queue.auth}")
+    @RabbitListener(queues = "${spring.rabbitmq.queue.user}")
     public void receiveMessage(String userId) {
         userId = userId.replace("\"", "");
         userService.createUser(userId);
