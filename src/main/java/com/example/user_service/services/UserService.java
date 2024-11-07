@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.user_service.entities.users.User;
+import com.example.user_service.entities.users.dtos.UpdateUserDTO;
 import com.example.user_service.repositories.UserRepository;
 import com.example.user_service.services.rabbitmq.RabbitSenderService;
 
@@ -25,37 +26,45 @@ public class UserService {
 
 
     @SuppressWarnings("rawtypes")
-    public ResponseEntity createUser(String userId){
+    public ResponseEntity createUser(String userId, String name){
         try{
+
             User user = new User();
             user.setId(userId);
+            user.setName(name);
             user.setTimestamp(DateTimeFormatter.ISO_INSTANT.format(Instant.now().minus(Duration.ofHours(6))));
             user.setProfilePhoto("default_pfp_.png");
             userRepository.save(user);
 
             System.out.println("Created User With ID: " + userId);
             return ResponseEntity.status(HttpStatus.OK).build();
+
         } catch (Exception e){
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            
         }
     }
 
     @SuppressWarnings("rawtypes")
-    public ResponseEntity updateUser(String userId, String instagramProfile, String spotifyProfile){
+    public ResponseEntity updateUser(String userId, UpdateUserDTO data){
 
         ResponseEntity<User> response = findUserById(userId);
         if (!response.getStatusCode().is2xxSuccessful()) {
+
             return response;
+
         }
         
         User user = response.getBody();
 
-        if(instagramProfile != null) user.setInstagramProfile(instagramProfile);
-        if(spotifyProfile != null) user.setSpotifyProfile(spotifyProfile);
+        if(data.instagramProfile() != null) user.setInstagramProfile(data.instagramProfile());
+        if(data.spotifyProfile() != null) user.setSpotifyProfile(data.spotifyProfile());
         
         userRepository.save(user);
 
         return ResponseEntity.ok().body("User data updated");
+
     }
 
     @SuppressWarnings("rawtypes")
@@ -63,17 +72,21 @@ public class UserService {
 
         ResponseEntity<User> response = findUserById(userId);
         if (!response.getStatusCode().is2xxSuccessful()) {
+
             return response;
+
         }
         
         rabbitSenderService.sendMessage(userId);
         userRepository.deleteById(userId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
+
     }
 
     private ResponseEntity<User> findUserById(String userId) {
         try{
+
             Optional<User> optionalUser = userRepository.findById(userId);
         
             if (optionalUser.isPresent()) {
@@ -81,8 +94,11 @@ public class UserService {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
+
         }catch(Exception e){
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
         }
     }
 }

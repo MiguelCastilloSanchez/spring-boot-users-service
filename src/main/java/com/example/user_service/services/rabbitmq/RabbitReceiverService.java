@@ -5,6 +5,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.user_service.entities.users.dtos.RabbitRegisterDTO;
 import com.example.user_service.services.UserService;
 
 
@@ -16,8 +17,9 @@ public class RabbitReceiverService {
     private UserService userService;
 
     @RabbitListener(queues = "${spring.rabbitmq.queue.user}")
-    public void receiveMessage(String userId) {
-        userId = userId.replace("\"", "");
-        userService.createUser(userId);
+    public void receiveMessage(RabbitRegisterDTO data) {
+
+        userService.createUser(data.userId(), data.name());
+        
     }
 }

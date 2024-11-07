@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,17 +29,11 @@ public class UsersController {
     @Autowired
     private TokenService tokenService;
 
-
-
     // ======================================================
     // ================  Public Endpoints  ==================
     // ======================================================
 
-    @SuppressWarnings("rawtypes")
-    @GetMapping(value = "/{userId}/delete")
-    public ResponseEntity test(@PathVariable String userId){
-        return userService.deleteUser(userId);
-    }
+
 
     // ======================================================
     // ================  USER Role Endpoints  ===============
@@ -65,7 +58,23 @@ public class UsersController {
         
         String userId = tokenService.getIdFromToken(token);
 
-        return userService.updateUser(userId, data.instagramProfile(), data.spotifyProfile());
+        return userService.updateUser(userId, data);
+    }
+
+
+    /**
+     * Deletes an user (Differs from remove in removing just itself)
+     *
+     * @param token String containing the token from the user interacting
+     * @return ResponseEntity containing the succes or failure of the request
+     */
+    @SuppressWarnings("rawtypes")
+    @DeleteMapping(value = "/delete")
+    public ResponseEntity test(@RequestHeader("Authorization") String token){
+
+        String userId = tokenService.getIdFromToken(token);
+
+        return userService.deleteUser(userId);
     }
 
     // ======================================================
@@ -73,16 +82,17 @@ public class UsersController {
     // ======================================================
 
     /**
-     * Removes an user
+     * Removes an user (Differs from delete in removing any user, not itself)
      *
      * @param userId String containing the user id to be removed
      * @return ResponseEntity indicating success or failure of user's removal
      */
     @SuppressWarnings("rawtypes")
     @DeleteMapping("/{userId}/remove")
-    public ResponseEntity deleteAnyUser(@PathVariable String userId){
+    public ResponseEntity removeUser(@PathVariable String userId){
 
-        return ResponseEntity.ok().body("ID: " + userId);
+        return userService.deleteUser(userId);
+
     }
 }
 

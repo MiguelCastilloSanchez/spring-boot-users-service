@@ -29,7 +29,6 @@ public class SecurityConfigurations {
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.DELETE, "/user/{userId}/remove").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/user/{userId}/delete").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();
