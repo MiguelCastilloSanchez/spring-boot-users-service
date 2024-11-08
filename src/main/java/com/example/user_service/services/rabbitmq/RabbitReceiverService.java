@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.user_service.entities.users.dtos.RabbitRegisterDTO;
-import com.example.user_service.services.UserService;
+import com.example.user_service.services.user.UserService;
 
 
 @Service

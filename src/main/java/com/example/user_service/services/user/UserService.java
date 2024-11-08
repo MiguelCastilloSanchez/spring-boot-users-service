@@ -1,4 +1,4 @@
-package com.example.user_service.services;
+package com.example.user_service.services.user;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.user_service.entities.users.User;
-import com.example.user_service.entities.users.dtos.UpdateUserDTO;
+import com.example.user_service.entities.users.dtos.UpdateUserDataDTO;
 import com.example.user_service.repositories.UserRepository;
 import com.example.user_service.services.rabbitmq.RabbitSenderService;
 
@@ -33,7 +33,6 @@ public class UserService {
             user.setId(userId);
             user.setName(name);
             user.setTimestamp(DateTimeFormatter.ISO_INSTANT.format(Instant.now().minus(Duration.ofHours(6))));
-            user.setProfilePhoto("default_pfp_.png");
             userRepository.save(user);
 
             System.out.println("Created User With ID: " + userId);
@@ -47,7 +46,7 @@ public class UserService {
     }
 
     @SuppressWarnings("rawtypes")
-    public ResponseEntity updateUser(String userId, UpdateUserDTO data){
+    public ResponseEntity updateUserData(String userId, UpdateUserDataDTO data){
 
         ResponseEntity<User> response = findUserById(userId);
         if (!response.getStatusCode().is2xxSuccessful()) {
@@ -84,7 +83,7 @@ public class UserService {
 
     }
 
-    private ResponseEntity<User> findUserById(String userId) {
+    protected ResponseEntity<User> findUserById(String userId) {
         try{
 
             Optional<User> optionalUser = userRepository.findById(userId);
