@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -75,7 +76,7 @@ public class UsersController {
     @PostMapping(value = "/update-profile-picture")
     public ResponseEntity updateProfilePicture(@RequestParam("image") MultipartFile image,
                                                 @RequestHeader("Authorization") String token){
-        
+
         String userId = tokenService.getIdFromToken(token);
 
         try {
@@ -85,6 +86,17 @@ public class UsersController {
         }
 
     }
+
+    @SuppressWarnings("rawtypes")
+    @GetMapping(value = "/get-profile-picture")
+    public ResponseEntity getProfilePicture(@RequestHeader("Authorization") String token){
+
+        String userId = tokenService.getIdFromToken(token);
+
+        return userImageService.getImage(userId);
+
+    }
+
 
     /**
      * Deletes an user (Differs from remove in removing just itself)

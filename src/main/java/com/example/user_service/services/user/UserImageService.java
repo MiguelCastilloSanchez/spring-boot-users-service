@@ -5,9 +5,12 @@ import java.io.IOException;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
 import java.awt.Image;
+
+
 import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
 
+import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +54,25 @@ public class UserImageService {
 
         return ResponseEntity.status(HttpStatus.OK).build();
         
+    }
+
+    @SuppressWarnings("rawtypes")
+    public ResponseEntity getImage(String userId){
+
+        ResponseEntity<User> response = userService.findUserById(userId);
+        if (!response.getStatusCode().is2xxSuccessful()) {
+
+            return response;
+
+        }
+
+        User user = response.getBody();
+        byte[] profilePicture = user.getThumbnail();
+
+        if (profilePicture == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/png")).body(profilePicture);
+
     }
 
     private boolean isFileSizeValid(MultipartFile image) {
