@@ -67,7 +67,7 @@ public class UserImageService {
         }
 
         User user = response.getBody();
-        byte[] profilePicture = user.getThumbnail();
+        byte[] profilePicture = user.getProfilePicture();
 
         if (profilePicture == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
