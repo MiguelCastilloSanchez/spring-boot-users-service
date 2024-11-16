@@ -56,6 +56,13 @@ public class UsersController {
         return userProfileService.getBasicProfiles(userIds);
     }
 
+    @SuppressWarnings("rawtypes")
+    @GetMapping(value="/{userId}")
+    public ResponseEntity getBasicProfiles(@PathVariable String userId){
+
+        return userProfileService.getCompleteProfile(userId);
+    }
+
     // ======================================================
     // ================  USER Role Endpoints  ===============
     // ======================================================

@@ -33,8 +33,6 @@ public class UserProfileService {
             
             User user = userResponse.getBody();
 
-            System.out.println(user.getName());
-
             BasicProfileDTO profile = new BasicProfileDTO(user.getId(), user.getName(),  user.getThumbnail());
 
             response.addProfile(profile);
@@ -42,5 +40,18 @@ public class UserProfileService {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @SuppressWarnings("rawtypes")
+    public ResponseEntity getCompleteProfile(String userId){
+    
+        ResponseEntity<User> userResponse = userService.findUserById(userId);
+        if (!userResponse.getStatusCode().is2xxSuccessful()) {
+            return userResponse;
+        }
+        
+        User user = userResponse.getBody();
+
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }

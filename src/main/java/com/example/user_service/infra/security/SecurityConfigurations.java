@@ -30,6 +30,7 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.DELETE, "/user/{userId}/remove").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/user/get-basic-profiles").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user/{userId}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();
