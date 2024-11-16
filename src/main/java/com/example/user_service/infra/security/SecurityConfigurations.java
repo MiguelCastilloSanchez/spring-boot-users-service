@@ -29,6 +29,7 @@ public class SecurityConfigurations {
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.DELETE, "/user/{userId}/remove").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/user/get-basic-profiles").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();

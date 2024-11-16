@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.user_service.entities.users.dtos.UpdateUserDataDTO;
 import com.example.user_service.services.TokenService;
 import com.example.user_service.services.user.UserImageService;
+import com.example.user_service.services.user.UserProfileService;
 import com.example.user_service.services.user.UserService;
 
 import jakarta.validation.Valid;
@@ -38,13 +40,21 @@ public class UsersController {
     private UserImageService userImageService;
 
     @Autowired
+    private UserProfileService userProfileService;
+
+    @Autowired
     private TokenService tokenService;
 
     // ======================================================
     // ================  Public Endpoints  ==================
     // ======================================================
 
+    @SuppressWarnings("rawtypes")
+    @GetMapping(value="/get-basic-profiles", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getBasicProfiles(@RequestBody List<String> userIds){
 
+        return userProfileService.getBasicProfiles(userIds);
+    }
 
     // ======================================================
     // ================  USER Role Endpoints  ===============
@@ -55,11 +65,12 @@ public class UsersController {
      *
      * @param data Object containing all the data to update
      * @param result Object checking the validation of the user's new data
+     * @param token String containing the token from the user interacting
      * @return ResponseEntity indicating success or failure of user's data update
      */
     @SuppressWarnings("rawtypes")
     @PostMapping(value = "/update-user", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity addPost(@Valid @RequestBody UpdateUserDataDTO data, BindingResult result, 
+    public ResponseEntity updateUser(@Valid @RequestBody UpdateUserDataDTO data, BindingResult result, 
                                     @RequestHeader("Authorization") String token){
 
         if (result.hasErrors()){
@@ -72,6 +83,13 @@ public class UsersController {
         return userService.updateUserData(userId, data);
     }
 
+    /**
+     * Update user's profile picture
+     *
+     * @param image Object containing the image file
+     * @param token String containing the token from the user interacting
+     * @return ResponseEntity indicating success or failure of user's image update
+     */
     @SuppressWarnings("rawtypes")
     @PostMapping(value = "/update-profile-picture")
     public ResponseEntity updateProfilePicture(@RequestParam("image") MultipartFile image,
@@ -87,6 +105,12 @@ public class UsersController {
 
     }
 
+    /**
+     * Returns user's profile picture
+     *
+     * @param token String containing the token from the user interacting
+     * @return ResponseEntity containing the users profile picture
+     */
     @SuppressWarnings("rawtypes")
     @GetMapping(value = "/get-profile-picture")
     public ResponseEntity getProfilePicture(@RequestHeader("Authorization") String token){
@@ -106,7 +130,7 @@ public class UsersController {
      */
     @SuppressWarnings("rawtypes")
     @DeleteMapping(value = "/delete")
-    public ResponseEntity test(@RequestHeader("Authorization") String token){
+    public ResponseEntity deleteUser(@RequestHeader("Authorization") String token){
 
         String userId = tokenService.getIdFromToken(token);
 
