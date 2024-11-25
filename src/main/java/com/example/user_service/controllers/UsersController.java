@@ -52,11 +52,11 @@ public class UsersController {
     /**
      * Returns all basic information from various users
      *
-     * @param userIds List of users id to be fetch
+     * @param userIds List of user ids to be fetch
      * @return ResponseEntity containing all users basic information (id, name and thumbnail)
      */
     @SuppressWarnings("rawtypes")
-    @GetMapping(value="/get-basic-profiles", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value="/get-basic-profiles", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getBasicProfiles(@RequestBody List<String> userIds){
 
         return userProfileService.getBasicProfiles(userIds);
