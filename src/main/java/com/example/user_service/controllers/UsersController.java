@@ -173,5 +173,18 @@ public class UsersController {
         return userService.deleteUser(userId);
 
     }
+
+    /**
+     * Returns basic information from all users
+     *
+     * @return ResponseEntity containing all users basic information (id, name and thumbnail)
+     */
+    @SuppressWarnings("rawtypes")
+    @PostMapping(value="/get-all-profiles")
+    public ResponseEntity getAllUsers(){
+
+        return userProfileService.getAllUsers();
+
+    }
 }
 
