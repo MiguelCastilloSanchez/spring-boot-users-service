@@ -4,7 +4,7 @@ public record BasicProfileDTO(
 
     String id,
     String name,
-    byte[] thumbnail
+    String pfpThumbnailURL
     
 ){
 }

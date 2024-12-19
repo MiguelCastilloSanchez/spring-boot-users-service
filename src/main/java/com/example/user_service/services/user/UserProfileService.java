@@ -43,7 +43,7 @@ public class UserProfileService {
             
             User user = userResponse.getBody();
 
-            BasicProfileDTO profile = new BasicProfileDTO(user.getId(), user.getName(),  user.getThumbnail());
+            BasicProfileDTO profile = new BasicProfileDTO(user.getId(), user.getName(),  user.getPfpThumbnailURL());
 
             response.addProfile(profile);
 

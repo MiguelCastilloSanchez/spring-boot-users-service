@@ -125,23 +125,6 @@ public class UsersController {
     }
 
     /**
-     * Returns user's profile picture
-     *
-     * @param token String containing the token from the user interacting
-     * @return ResponseEntity containing the users profile picture
-     */
-    @SuppressWarnings("rawtypes")
-    @GetMapping(value = "/get-profile-picture")
-    public ResponseEntity getProfilePicture(@RequestHeader("Authorization") String token){
-
-        String userId = tokenService.getIdFromToken(token);
-
-        return userImageService.getImage(userId);
-
-    }
-
-
-    /**
      * Deletes an user (Differs from remove in removing just itself)
      *
      * @param token String containing the token from the user interacting

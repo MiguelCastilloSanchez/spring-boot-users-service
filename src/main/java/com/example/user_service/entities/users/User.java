@@ -22,6 +22,6 @@ public class User {
     private String instagramProfile;
     private String spotifyProfile;
 
-    private byte[] profilePicture;
-    private byte[] thumbnail;
+    private String pfpURL;
+    private String pfpThumbnailURL;
 }
