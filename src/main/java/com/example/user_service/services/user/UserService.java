@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.example.user_service.entities.users.User;
 import com.example.user_service.entities.users.dtos.UpdateUserDataDTO;
 import com.example.user_service.repositories.UserRepository;
+import com.example.user_service.services.AzureBlobService;
 import com.example.user_service.services.rabbitmq.RabbitSenderService;
 
 @Service
@@ -23,6 +25,12 @@ public class UserService {
 
     @Autowired
     private RabbitSenderService rabbitSenderService;
+
+    @Value("${storage.url}")
+    private String containerURL;
+
+    @Autowired
+    private AzureBlobService azureBlobService;
 
 
     @SuppressWarnings("rawtypes")
@@ -75,8 +83,14 @@ public class UserService {
             return response;
 
         }
+
+        User user = response.getBody();
         
         rabbitSenderService.sendMessage(userId);
+
+        if (user.getPfpURL() != null) azureBlobService.deleteBlob(user.getPfpURL(), containerURL);
+        if (user.getPfpThumbnailURL() != null) azureBlobService.deleteBlob(user.getPfpThumbnailURL(), containerURL);
+
         userRepository.deleteById(userId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
